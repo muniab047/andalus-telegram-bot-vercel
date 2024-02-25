@@ -24,19 +24,23 @@ application = Application.builder().token(TOKEN).build()
 
 
 class TelegramWebhook(BaseModel):
-    # update_id: int
-    # message: Optional[dict]
-    # edited_message: Optional[dict]
-    # channel_post: Optional[dict]
-    # edited_channel_post: Optional[dict]
-    # inline_query: Optional[dict]
-    # chosen_inline_result: Optional[dict]
-    # callback_query: Optional[dict]
-    # shipping_query: Optional[dict]
-    # pre_checkout_query: Optional[dict]
-    # poll: Optional[dict]
-    # poll_answer: Optional[dict]
-    body: dict
+    update_id: int
+    message: Optional[dict]
+    edited_message: Optional[dict]
+    channel_post: Optional[dict]
+    edited_channel_post: Optional[dict]
+    inline_query: Optional[dict]
+    chosen_inline_result: Optional[dict]
+    callback_query: Optional[dict]
+    shipping_query: Optional[dict]
+    pre_checkout_query: Optional[dict]
+    poll: Optional[dict]
+    poll_answer: Optional[dict]
+    my_chat_member: Optional[dict]
+    chat_member: Optional[dict]
+    chat_join_request: Optional[dict]
+    chat_boost: Optional[dict]
+    removed_chat_boost: Optional[dict]
 
 
 
@@ -48,7 +52,6 @@ def register_application(application):
 
 @app.post("/webhook")
 async def webhook(webhook_data: TelegramWebhook):
-    print(webhook_data)
     register_application(application)
     await application.initialize()
     await application.process_update(
