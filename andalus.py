@@ -43,6 +43,8 @@ async def original_button(update, context):
     reply_markup =ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     await update.message.reply_text("welcome to andalus", reply_markup=reply_markup)
     context.user_data['state']= 'original state'
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
+    
 
 
 async def start(update, context ):
@@ -216,6 +218,7 @@ async def button_handler(update:Update,context:CallbackContext):
         if day!= 'Friday' and day!='Saturday':
             if text== 'Throughout the day' or text== 'During my shift only' or text== 'Outside of my shift only' or text=='Not at all':
                 context.user_data['availability']=text
+                await persistence.update_user_data(update.effective_user.id, context.user_data)
                 await update.message.reply_text('Specify which courses your student should focus on this week\n Please write all only in one message')
                 context.user_data['state']= 'course schedule'
                 
@@ -223,10 +226,12 @@ async def button_handler(update:Update,context:CallbackContext):
             elif text=="I can compromise only if it is necessary by..." or text== 'Other':
                 await update.message.reply_text("Tell us what's in your mind")              
                 context.user_data['state']= 'necessary'
+                await persistence.update_user_data(update.effective_user.id, context.user_data)
         else:
            await update.message.reply_text("absent time out")
            await update.message.reply_text('Specify which courses your student should focus on this week\n Please write all only in one message')
            context.user_data['state']= 'course schedule'
+           await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
         if text=="⬅️ Back":
@@ -238,6 +243,7 @@ async def button_handler(update:Update,context:CallbackContext):
         context.user_data['availability']=text
         await update.message.reply_text('Specify which courses your student should focus on this week\n Please write all only in one message')
         context.user_data['state']= 'course schedule'
+        await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
     elif state=='course schedule':
@@ -246,6 +252,7 @@ async def button_handler(update:Update,context:CallbackContext):
         await send_message(update, context ,info )
         await update.message.reply_text(f'{info}\n\n\n Message sent to Academics. Thank you')
         context.user_data['state']= 'availability'
+        await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
     elif state=='student':
@@ -366,16 +373,19 @@ async def button_handler(update:Update,context:CallbackContext):
         if text=="Grade 1️⃣" or text =="Grade 2️⃣" or text == "Grade 3️⃣" or text=="Grade 4️⃣" or text=="Grade 5️⃣" or text =="Grade 6️⃣" or text == "Grade 7️⃣" or text=="Grade 8️⃣" :
             updatedState= f"{text} language"
             context.user_data['grade']= text
+            await persistence.update_user_data(update.effective_user.id, context.user_data)
             await select_language(update, context, updatedState)
         elif text=="Grade 9️⃣" or text =="Grade 1️⃣0️⃣" :
              updatedState=f'{text} format'
              context.user_data['grade']= text
+             await persistence.update_user_data(update.effective_user.id, context.user_data)
              await select_format(update, context, updatedState)
              
              
         elif text == "Grade 1️⃣1️⃣" or text=="Grade 1️⃣2️⃣":
              updatedState=f'{text} catagory'
              context.user_data['grade']= text
+             await persistence.update_user_data(update.effective_user.id, context.user_data)
              await select_catagory(update,context,updatedState)
         elif text=="👶 KG":
             updatedState="kg language"
