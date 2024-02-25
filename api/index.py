@@ -11,7 +11,7 @@ from telegram.ext import (
     filters,CallbackQueryHandler,Application
 )
 
-from andalus import start, button_handler, button_click
+from .andalus import start, button_handler, button_click
 
 dotenv_path = find_dotenv()
 load_dotenv()
