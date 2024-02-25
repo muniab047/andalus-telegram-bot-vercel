@@ -29,6 +29,11 @@ chat_users = {}
 persistence = MongoPersistence(
     mongo_url=MONGO_URL,
     db_name=DB_NAME,
+    name_col_user_data="my-collection-for-user-data",  # optional
+    name_col_chat_data="my-collection-for-chat-data",  # optional
+    name_col_bot_data="my-collection-for-bot-data",  # optional
+    name_col_conversations_data="my-collection-for-conversations",  # optional
+    create_col_if_not_exist=True,  # optional
     ignore_general_data=["cache"],
     ignore_user_data=["foo", "bar"],
 )
