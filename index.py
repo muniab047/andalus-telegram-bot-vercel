@@ -49,14 +49,16 @@ def register_application(application):
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
     application.add_handler(CallbackQueryHandler(button_click))
 
+from typing import Dict, Any
 
 @app.post("/webhook")
-async def webhook(webhook_data: TelegramWebhook):
+async def webhook(webhook_data: Dict[Any, Any]):
+    print(webhook_data)
     register_application(application)
     await application.initialize()
     await application.process_update(
         Update.de_json(
-            json.loads(json.dumps(webhook_data.dict(), default=lambda o: o.__dict__)),
+            json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
             application.bot,
         )
     )
