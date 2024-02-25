@@ -48,6 +48,7 @@ def register_application(application):
 
 @app.post("/webhook")
 async def webhook(webhook_data: TelegramWebhook):
+    print(webhook_data)
     register_application(application)
     await application.initialize()
     await application.process_update(
