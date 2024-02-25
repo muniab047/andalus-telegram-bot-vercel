@@ -24,18 +24,19 @@ application = Application.builder().token(TOKEN).build()
 
 
 class TelegramWebhook(BaseModel):
-    update_id: int
-    message: Optional[dict]
-    edited_message: Optional[dict]
-    channel_post: Optional[dict]
-    edited_channel_post: Optional[dict]
-    inline_query: Optional[dict]
-    chosen_inline_result: Optional[dict]
-    callback_query: Optional[dict]
-    shipping_query: Optional[dict]
-    pre_checkout_query: Optional[dict]
-    poll: Optional[dict]
-    poll_answer: Optional[dict]
+    # update_id: int
+    # message: Optional[dict]
+    # edited_message: Optional[dict]
+    # channel_post: Optional[dict]
+    # edited_channel_post: Optional[dict]
+    # inline_query: Optional[dict]
+    # chosen_inline_result: Optional[dict]
+    # callback_query: Optional[dict]
+    # shipping_query: Optional[dict]
+    # pre_checkout_query: Optional[dict]
+    # poll: Optional[dict]
+    # poll_answer: Optional[dict]
+    body: dict
 
 
 
