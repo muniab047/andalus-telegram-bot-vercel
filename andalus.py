@@ -6,7 +6,13 @@ from asyncio import Queue
 import time
 import os
 from dotenv import load_dotenv
+from mongopersistence import MongoPersistence
+
 load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
+MONGO_URL = os.getenv("MONGO_URL")
+DB_NAME = os.getenv("DB_NAME")
 
 logging.basicConfig(level=logging.INFO)
 STUDENTS=['Abas', 'Abdulkadir','Amar','Asiya','Ferhan', 'Hanan','Haniya', 'Hilal', 'Rahmet 06', 'Rahmet (Rim)','Muaz','Mubarek', 'Musab', 'Rahmet 05','Sehmi','Seid','Sekina','Sifen', 'Yezid' ]
@@ -14,6 +20,18 @@ STUDENTS=['Abas', 'Abdulkadir','Amar','Asiya','Ferhan', 'Hanan','Haniya', 'Hilal
 TOKEN = os.getenv("TOKEN")
 bot = Bot(token=TOKEN)
 #app = Application.builder().token(Token).build()
+
+persistence = MongoPersistence(
+        mongo_url=MONGO_URL,
+        db_name=DB_NAME,
+        name_col_user_data="user-data",  # optional
+        name_col_chat_data="chat-data",  # optional
+        name_col_bot_data="bot-data",  # optional
+        name_col_conversations_data="conversations",  # optional
+        create_col_if_not_exist=True,  # optional
+        load_on_flush=False,
+        update_interval=5
+    )
 
 async def original_button(update, context):
     buttons=[
@@ -37,15 +55,16 @@ async def send_message(update, context, message):
 
 
 async def show_keyboard_button(update, context, courses, states, message):
-     buttons=[]
-     for course in courses:        
+    buttons=[]
+    for course in courses:        
         buttons.append([KeyboardButton(course)])
 
-     buttons.append([KeyboardButton("🏠 Home"),KeyboardButton("⬅️ Back")])
+    buttons.append([KeyboardButton("🏠 Home"),KeyboardButton("⬅️ Back")])
 
-     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-     await update.message.reply_text(message, reply_markup=reply_markup)
-     context.user_data['state']= states
+    reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    await update.message.reply_text(message, reply_markup=reply_markup)
+    context.user_data['state']= states
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
 async def select_language(update,context, state):
@@ -53,6 +72,7 @@ async def select_language(update,context, state):
              [KeyboardButton("⬅️ Back")]]
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.user_data['state']= state
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
     await update.message.reply_text("Select the Language",reply_markup=reply_markup )
 
 
@@ -61,6 +81,8 @@ async def select_catagory(update,context, state):
              [KeyboardButton("⬅️ Back")]]
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.user_data['state']= state
+    
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
     await update.message.reply_text("Select the Catagory",reply_markup=reply_markup )
 
 async def select_format (update,context, state):
@@ -68,6 +90,8 @@ async def select_format (update,context, state):
              [KeyboardButton("⬅️ Back")]]
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.user_data['state']= state
+    
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
     await update.message.reply_text("Select the Format",reply_markup=reply_markup )
 
 
@@ -1768,6 +1792,8 @@ async def button_handler(update:Update,context:CallbackContext):
         elif text=='⬅️ Back':
             updatedState="social grade 12 format"
             await select_format(update, context, updatedState)
+    
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
 
@@ -4201,6 +4227,7 @@ async def button_click(update, context):
     elif button_clicked== "grade 12 ict question":
         id=[]
         await retrive_data(query, id, user_name, chat_id,button_clicked)
+    await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
 
@@ -4242,7 +4269,9 @@ def main():
  
     updater = Updater(Bot(TOKEN),Queue(maxsize=0) )
     #dp = updater.dispatcher
-    app= Application.builder().token(TOKEN).build()
+    
+    app= Application.builder().token(TOKEN).persistence(persistence).build()
+    
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))

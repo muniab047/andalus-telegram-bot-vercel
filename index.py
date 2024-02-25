@@ -13,7 +13,7 @@ from telegram.ext import (
 from typing import Dict, Any
 from mongopersistence import MongoPersistence
 
-from andalus import start, button_handler, button_click
+from andalus import start, button_handler, button_click, persistence
 
 dotenv_path = find_dotenv()
 load_dotenv()
@@ -25,18 +25,6 @@ DB_NAME = os.getenv("DB_NAME")
 
 app = FastAPI()
 chat_users = {}
-
-persistence = MongoPersistence(
-    mongo_url=MONGO_URL,
-    db_name=DB_NAME,
-    name_col_user_data="user-data",  # optional
-    name_col_chat_data="chat-data",  # optional
-    name_col_bot_data="bot-data",  # optional
-    name_col_conversations_data="conversations",  # optional
-    create_col_if_not_exist=True,  # optional
-    load_on_flush=True,
-    update_interval=5
-)
 
 application = Application.builder().token(TOKEN).persistence(persistence).build()
 
