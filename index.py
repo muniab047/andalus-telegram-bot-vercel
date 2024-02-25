@@ -1,8 +1,6 @@
 import json
-import os
 from typing import Optional
 
-from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 from telegram import Update
@@ -11,22 +9,16 @@ from telegram.ext import (
     filters,CallbackQueryHandler,Application
 )
 from typing import Dict, Any
-from mongopersistence import MongoPersistence
 
-from andalus import start, button_handler, button_click, persistence
-
-dotenv_path = find_dotenv()
-load_dotenv()
-
-TOKEN = os.getenv("TOKEN")
-MONGO_URL = os.getenv("MONGO_URL")
-DB_NAME = os.getenv("DB_NAME")
+from andalus import (start, button_handler,
+                     button_click, persistence,
+                     TOKEN)
 
 
 app = FastAPI()
 chat_users = {}
 
-application = Application.builder().token(TOKEN).build()
+application = Application.builder().token(TOKEN).persistence(persistence).build()
 
 
 class TelegramWebhook(BaseModel):
@@ -58,7 +50,6 @@ def register_application(application):
 
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
-    application.persistence(persistence)
     register_application(application)
     await application.initialize()
     await application.process_update(
