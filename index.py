@@ -34,8 +34,8 @@ persistence = MongoPersistence(
     name_col_bot_data="bot-data",  # optional
     name_col_conversations_data="conversations",  # optional
     create_col_if_not_exist=True,  # optional
-    load_on_flush=False,
-    update_interval=1
+    load_on_flush=True,
+    update_interval=5
 )
 
 application = Application.builder().token(TOKEN).persistence(persistence).build()
@@ -70,7 +70,6 @@ def register_application(application):
 
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
-    print(webhook_data)
     register_application(application)
     await application.initialize()
     await application.process_update(
@@ -79,6 +78,7 @@ async def webhook(webhook_data: Dict[Any, Any]):
             application.bot,
         )
     )
+    
 
     # bot = Bot(token=TOKEN)
 
