@@ -3,7 +3,7 @@ import logging
 from collections.abc import Awaitable, Callable
 from copy import deepcopy
 from dataclasses import dataclass, field
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, Union
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection, AsyncIOMotorDatabase
 from pymongo.errors import CollectionInvalid
@@ -21,7 +21,7 @@ from telegram.ext._utils.types import (
 
 BOT_DATA_KEY = 0
 
-NEW_DATA = BD | CD | UD | CDCData | ConversationDict
+NEW_DATA = Union[BD , CD , UD , CDCData , ConversationDict]
 
 logger = logging.getLogger(__name__)
 D = TypeVar("D", bound=dict)
@@ -87,11 +87,11 @@ class MongoPersistence(BasePersistence[BD, CD, UD]):
         self,
         mongo_url: str,
         db_name: str,
-        name_col_user_data: str | None = None,
-        name_col_chat_data: str | None = None,
-        name_col_bot_data: str | None = None,
-        name_col_conversations_data: str | None = None,
-        # name_col_callback_data: str | None = None,
+        name_col_user_data: Union[str , None] = None,
+        name_col_chat_data: Union[str , None] = None,
+        name_col_bot_data: Union[str , None] = None,
+        name_col_conversations_data: Union[str , None] = None,
+        # name_col_callback_data: Union[str , None] = None,
         create_col_if_not_exist: bool = False,
         ignore_general_data: list[str] = None,
         ignore_user_data: list[str] = None,
@@ -310,7 +310,7 @@ class MongoPersistence(BasePersistence[BD, CD, UD]):
 
     # [==================================== CALLBACK DATA FUNCTIONS ======================================]
 
-    async def get_callback_data(self) -> CDCData | None:
+    async def get_callback_data(self) -> Union[CDCData , None]:
         # TODO: create this method
         pass
 
@@ -344,7 +344,7 @@ class MongoPersistence(BasePersistence[BD, CD, UD]):
         return deepcopy(data.get(name))
 
     @log_data
-    async def update_conversation(self, name: str, key: ConversationKey, new_state: object | None) -> None:
+    async def update_conversation(self, name: str, key: ConversationKey, new_state: Union[object , None]) -> None:
         await self.post_init()
         if not self.conversations_data.exists():
             return
