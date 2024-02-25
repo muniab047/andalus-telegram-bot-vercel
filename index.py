@@ -36,6 +36,8 @@ persistence = MongoPersistence(
     create_col_if_not_exist=True,  # optional
     ignore_general_data=["cache"],
     ignore_user_data=["foo", "bar"],
+    load_on_flush=False,
+    update_interval=60
 )
 
 application = Application.builder().token(TOKEN).persistence(persistence).build()
