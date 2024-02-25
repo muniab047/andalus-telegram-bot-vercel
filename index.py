@@ -26,7 +26,7 @@ DB_NAME = os.getenv("DB_NAME")
 app = FastAPI()
 chat_users = {}
 
-application = Application.builder().token(TOKEN).persistence(persistence).build()
+application = Application.builder().token(TOKEN).build()
 
 
 class TelegramWebhook(BaseModel):
@@ -58,6 +58,7 @@ def register_application(application):
 
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
+    application.persistence(persistence)
     register_application(application)
     await application.initialize()
     await application.process_update(
