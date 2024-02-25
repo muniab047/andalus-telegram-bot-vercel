@@ -10,17 +10,30 @@ from telegram.ext import (
     Application, CommandHandler, MessageHandler,
     filters,CallbackQueryHandler,Application
 )
+from typing import Dict, Any
+from mongopersistence import MongoPersistence
 
 from andalus import start, button_handler, button_click
 
 dotenv_path = find_dotenv()
 load_dotenv()
+
 TOKEN = os.getenv("TOKEN")
+MONGO_URL = os.getenv("MONGO_URL")
+DB_NAME = os.getenv("DB_NAME")
+
 
 app = FastAPI()
 chat_users = {}
 
-application = Application.builder().token(TOKEN).build()
+persistence = MongoPersistence(
+    mongo_url=MONGO_URL,
+    db_name=DB_NAME,
+    ignore_general_data=["cache"],
+    ignore_user_data=["foo", "bar"],
+)
+
+application = Application.builder().token(TOKEN).persistence(persistence).build()
 
 
 class TelegramWebhook(BaseModel):
@@ -49,7 +62,6 @@ def register_application(application):
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
     application.add_handler(CallbackQueryHandler(button_click))
 
-from typing import Dict, Any
 
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
