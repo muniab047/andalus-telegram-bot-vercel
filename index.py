@@ -63,7 +63,7 @@ async def webhook(webhook_data: Dict[Any, Any]):
     bot = Application.builder().token(TOKEN).persistence(persistence).build()
     register(bot)
 
-    update = Update.de_json(webhook_data.__dict__, bot)
+    update = Update.de_json(webhook_data, bot)
 
     await bot.initialize()
     await bot.start()
