@@ -19,9 +19,6 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from postgres import PostgresPersistence
 
 app = FastAPI()
-chat_users = {}
-# Your Postgresql database URL
-DB_URI = "postgresql://username:pw@hostname:port/db_name"
 
 # SQLAlchemy session maker
 def start_session():
