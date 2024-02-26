@@ -18,7 +18,7 @@ from andalus import (start, button_handler,
 app = FastAPI()
 chat_users = {}
 
-# application = Application.builder().token(TOKEN).persistence(persistence).build()
+application = Application.builder().token(TOKEN).persistence(persistence).build()
 
 
 class TelegramWebhook(BaseModel):
@@ -40,7 +40,9 @@ class TelegramWebhook(BaseModel):
     chat_boost: Optional[dict]
     removed_chat_boost: Optional[dict]
 
-def register(application):
+
+
+def register_application(application):
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
     application.add_handler(CallbackQueryHandler(button_click))
@@ -48,28 +50,27 @@ def register(application):
 
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
-    # async with application:
-    #     await application.initialize()
-    #     await application.start()
-    #     await application.process_update(
-    #         Update.de_json(
-    #             json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
-    #             application.bot,
-    #         )
-    #     )
-    #     await application.stop()
+    register_application(application)
+    await application.initialize()
+    await application.start()
+    await application.process_update(
+        Update.de_json(
+            json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
+            application.bot,
+        )
+    )
+    await application.stop()
     
 
-    bot = Application.builder().token(TOKEN).persistence(persistence).build()
-    register(bot)
+    # bot = Bot(token=TOKEN)
 
-    update = Update.de_json(webhook_data, bot)
+    # update = Update.de_json(webhook_data.__dict__, bot)
 
-    await bot.initialize()
-    await bot.start()
-    await bot.process_update(update)
-    await bot.updater.stop()
-    await bot.stop()
+    # await botApp.initialize()
+    # await botApp.start()
+    # await botApp.process_update(update)
+    # await botApp.updater.stop()
+    # await botApp.stop()
 
     return {"message": "ok"}
 
