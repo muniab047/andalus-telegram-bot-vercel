@@ -1,7 +1,5 @@
 import json
-import asyncio
 from typing import Optional
-import uvicorn
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -14,7 +12,7 @@ from typing import Dict, Any
 
 from andalus import (start, button_handler,
                      button_click, persistence,
-                     TOKEN, PORT)
+                     TOKEN)
 
 
 app = FastAPI()
@@ -43,59 +41,38 @@ class TelegramWebhook(BaseModel):
     removed_chat_boost: Optional[dict]
 
 
-
-def register_application(application):
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
-    application.add_handler(CallbackQueryHandler(button_click))
-
-async def main():
-    @app.post("/webhook")
-    async def webhook(webhook_data: Dict[Any, Any]):
-        register_application(application)
-        await application.initialize()
-        await application.process_update(
-            Update.de_json(
-                json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
-                application.bot,
-            )
-        )
-        async with application:
-            await application.start()
-            await application.stop()
-        
-
-        # bot = Bot(token=TOKEN)
-
-        # update = Update.de_json(webhook_data.__dict__, bot)
-
-        # await botApp.initialize()
-        # await botApp.start()
-        # await botApp.process_update(update)
-        # await botApp.updater.stop()
-        # await botApp.stop()
-
-        return {"message": "ok"}
+application.add_handler(CommandHandler("start", start))
+application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
+application.add_handler(CallbackQueryHandler(button_click))
 
 
-    @app.get("/")
-    def index():
-        return {"message": "Hello World"}
-    
-    webserver = uvicorn.Server(
-        config=uvicorn.Config(
-            app=app,
-            port=PORT,
-            use_colors=False,
-            host="127.0.0.1",
+@app.post("/webhook")
+async def webhook(webhook_data: Dict[Any, Any]):
+    await application.initialize()
+    await application.process_update(
+        Update.de_json(
+            json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
+            application.bot,
         )
     )
-
-    # Run application and webserver together
     async with application:
         await application.start()
-        await webserver.serve()
         await application.stop()
+    
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    # bot = Bot(token=TOKEN)
+
+    # update = Update.de_json(webhook_data.__dict__, bot)
+
+    # await botApp.initialize()
+    # await botApp.start()
+    # await botApp.process_update(update)
+    # await botApp.updater.stop()
+    # await botApp.stop()
+
+    return {"message": "ok"}
+
+
+@app.get("/")
+def index():
+    return {"message": "Hello World"}
