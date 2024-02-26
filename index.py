@@ -1,5 +1,7 @@
 import json
+import asyncio
 from typing import Optional
+import uvicorn
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -47,35 +49,53 @@ def register_application(application):
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
     application.add_handler(CallbackQueryHandler(button_click))
 
+async def main():
+    @app.post("/webhook")
+    async def webhook(webhook_data: Dict[Any, Any]):
+        register_application(application)
+        await application.initialize()
+        await application.process_update(
+            Update.de_json(
+                json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
+                application.bot,
+            )
+        )
+        async with application:
+            await application.start()
+            await application.stop()
+        
 
-@app.post("/webhook")
-async def webhook(webhook_data: Dict[Any, Any]):
-    register_application(application)
-    await application.initialize()
-    await application.process_update(
-        Update.de_json(
-            json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
-            application.bot,
+        # bot = Bot(token=TOKEN)
+
+        # update = Update.de_json(webhook_data.__dict__, bot)
+
+        # await botApp.initialize()
+        # await botApp.start()
+        # await botApp.process_update(update)
+        # await botApp.updater.stop()
+        # await botApp.stop()
+
+        return {"message": "ok"}
+
+
+    @app.get("/")
+    def index():
+        return {"message": "Hello World"}
+    
+    webserver = uvicorn.Server(
+        config=uvicorn.Config(
+            app=app,
+            port=8000,
+            use_colors=False,
+            host="127.0.0.1",
         )
     )
+
+    # Run application and webserver together
     async with application:
         await application.start()
+        await webserver.serve()
         await application.stop()
-    
 
-    # bot = Bot(token=TOKEN)
-
-    # update = Update.de_json(webhook_data.__dict__, bot)
-
-    # await botApp.initialize()
-    # await botApp.start()
-    # await botApp.process_update(update)
-    # await botApp.updater.stop()
-    # await botApp.stop()
-
-    return {"message": "ok"}
-
-
-@app.get("/")
-def index():
-    return {"message": "Hello World"}
+if __name__ == "__main__":
+    asyncio.run(main())
