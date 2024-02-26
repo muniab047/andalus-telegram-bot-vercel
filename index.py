@@ -58,6 +58,7 @@ async def webhook(webhook_data: Dict[Any, Any]):
             application.bot,
         )
     )
+    await application.stop()
     
 
     # bot = Bot(token=TOKEN)
