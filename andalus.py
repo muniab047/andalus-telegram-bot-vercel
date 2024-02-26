@@ -13,6 +13,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 MONGO_URL = os.getenv("MONGO_URL")
 DB_NAME = os.getenv("DB_NAME")
+DB_URI = os.getenv("DB_URI")
 PORT = int(os.getenv("PORT", "80"))
 
 logging.basicConfig(level=logging.INFO)

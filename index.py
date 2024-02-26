@@ -11,12 +11,25 @@ from telegram.ext import (
 from typing import Dict, Any
 
 from andalus import (start, button_handler,
-                     button_click, persistence,
-                     TOKEN)
+                     button_click,
+                     TOKEN, DB_URI)
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 
+from postgres import PostgresPersistence
 
 app = FastAPI()
 chat_users = {}
+# Your Postgresql database URL
+DB_URI = "postgresql://username:pw@hostname:port/db_name"
+
+# SQLAlchemy session maker
+def start_session():
+    engine = create_engine(DB_URI, client_encoding="utf8")
+    return scoped_session(sessionmaker(bind=engine, autoflush=False))
+
+persistence = PostgresPersistence(session=start_session())
+
 
 application = Application.builder().token(TOKEN).persistence(persistence).build()
 
