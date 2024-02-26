@@ -49,7 +49,7 @@ application.add_handler(CallbackQueryHandler(button_click))
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
     async with application:
-        # await application.initialize()
+        await application.initialize()
         await application.start()
         await application.process_update(
             Update.de_json(
