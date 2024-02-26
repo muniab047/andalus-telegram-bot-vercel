@@ -51,14 +51,16 @@ def register_application(application):
 @app.post("/webhook")
 async def webhook(webhook_data: Dict[Any, Any]):
     register_application(application)
-    await application.initialize()
-    await application.process_update(
-        Update.de_json(
-            json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
-            application.bot,
+    try:
+        await application.initialize()
+        await application.process_update(
+            Update.de_json(
+                json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
+                application.bot,
+            )
         )
-    )
-    await application.stop()
+    finally:
+        await application.shutdown()
     
 
     # bot = Bot(token=TOKEN)
