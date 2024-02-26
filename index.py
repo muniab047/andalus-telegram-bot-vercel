@@ -52,14 +52,12 @@ def register_application(application):
 async def webhook(webhook_data: Dict[Any, Any]):
     register_application(application)
     await application.initialize()
-    await application.start()
     await application.process_update(
         Update.de_json(
             json.loads(json.dumps(webhook_data, default=lambda o: o.__dict__)),
             application.bot,
         )
     )
-    await application.stop()
     
 
     # bot = Bot(token=TOKEN)
