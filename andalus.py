@@ -13,6 +13,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 MONGO_URL = os.getenv("MONGO_URL")
 DB_NAME = os.getenv("DB_NAME")
+PORT = int(os.getenv("PORT", "80"))
 
 logging.basicConfig(level=logging.INFO)
 STUDENTS=['Abas', 'Abdulkadir','Amar','Asiya','Ferhan', 'Hanan','Haniya', 'Hilal', 'Rahmet 06', 'Rahmet (Rim)','Muaz','Mubarek', 'Musab', 'Rahmet 05','Sehmi','Seid','Sekina','Sifen', 'Yezid' ]

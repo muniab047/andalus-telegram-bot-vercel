@@ -14,7 +14,7 @@ from typing import Dict, Any
 
 from andalus import (start, button_handler,
                      button_click, persistence,
-                     TOKEN)
+                     TOKEN, PORT)
 
 
 app = FastAPI()
@@ -85,7 +85,7 @@ async def main():
     webserver = uvicorn.Server(
         config=uvicorn.Config(
             app=app,
-            port=8000,
+            port=PORT,
             use_colors=False,
             host="127.0.0.1",
         )
