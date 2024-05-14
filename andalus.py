@@ -6,12 +6,10 @@ from asyncio import Queue
 import time
 import os
 from dotenv import load_dotenv
-from mongopersistence import MongoPersistence
 
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
-MONGO_URL = os.getenv("MONGO_URL")
 DB_NAME = os.getenv("DB_NAME")
 DB_URI = os.getenv("DB_URI")
 PORT = int(os.getenv("PORT", "80"))
@@ -23,17 +21,6 @@ TOKEN = os.getenv("TOKEN")
 bot = Bot(token=TOKEN)
 #app = Application.builder().token(Token).build()
 
-persistence = MongoPersistence(
-        mongo_url=MONGO_URL,
-        db_name=DB_NAME,
-        name_col_user_data="user-data",  # optional
-        name_col_chat_data="chat-data",  # optional
-        name_col_bot_data="bot-data",  # optional
-        name_col_conversations_data="conversations",  # optional
-        create_col_if_not_exist=True,  # optional
-        load_on_flush=False,
-        update_interval=5
-    )
 
 async def original_button(update, context):
     buttons=[
@@ -45,7 +32,6 @@ async def original_button(update, context):
     reply_markup =ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     await update.message.reply_text("welcome to andalus", reply_markup=reply_markup)
     context.user_data['state']= 'original state'
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
     
 
 
@@ -68,7 +54,6 @@ async def show_keyboard_button(update, context, courses, states, message):
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     await update.message.reply_text(message, reply_markup=reply_markup)
     context.user_data['state']= states
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
 async def select_language(update,context, state):
@@ -76,7 +61,6 @@ async def select_language(update,context, state):
              [KeyboardButton("⬅️ Back")]]
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.user_data['state']= state
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
     await update.message.reply_text("Select the Language",reply_markup=reply_markup )
 
 
@@ -86,7 +70,6 @@ async def select_catagory(update,context, state):
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.user_data['state']= state
     
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
     await update.message.reply_text("Select the Catagory",reply_markup=reply_markup )
 
 async def select_format (update,context, state):
@@ -95,7 +78,6 @@ async def select_format (update,context, state):
     reply_markup= ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.user_data['state']= state
     
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
     await update.message.reply_text("Select the Format",reply_markup=reply_markup )
 
 
@@ -220,7 +202,6 @@ async def button_handler(update:Update,context:CallbackContext):
         if day!= 'Friday' and day!='Saturday':
             if text== 'Throughout the day' or text== 'During my shift only' or text== 'Outside of my shift only' or text=='Not at all':
                 context.user_data['availability']=text
-                # await persistence.update_user_data(update.effective_user.id, context.user_data)
                 await update.message.reply_text('Specify which courses your student should focus on this week\n Please write all only in one message')
                 context.user_data['state']= 'course schedule'
                 
@@ -228,12 +209,10 @@ async def button_handler(update:Update,context:CallbackContext):
             elif text=="I can compromise only if it is necessary by..." or text== 'Other':
                 await update.message.reply_text("Tell us what's in your mind")              
                 context.user_data['state']= 'necessary'
-                # await persistence.update_user_data(update.effective_user.id, context.user_data)
         else:
            await update.message.reply_text("absent time out")
            await update.message.reply_text('Specify which courses your student should focus on this week\n Please write all only in one message')
            context.user_data['state']= 'course schedule'
-           # await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
         if text=="⬅️ Back":
@@ -245,7 +224,6 @@ async def button_handler(update:Update,context:CallbackContext):
         context.user_data['availability']=text
         await update.message.reply_text('Specify which courses your student should focus on this week\n Please write all only in one message')
         context.user_data['state']= 'course schedule'
-        # await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
     elif state=='course schedule':
@@ -254,7 +232,6 @@ async def button_handler(update:Update,context:CallbackContext):
         await send_message(update, context ,info )
         await update.message.reply_text(f'{info}\n\n\n Message sent to Academics. Thank you')
         context.user_data['state']= 'availability'
-        # await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
     elif state=='student':
@@ -375,19 +352,16 @@ async def button_handler(update:Update,context:CallbackContext):
         if text=="Grade 1️⃣" or text =="Grade 2️⃣" or text == "Grade 3️⃣" or text=="Grade 4️⃣" or text=="Grade 5️⃣" or text =="Grade 6️⃣" or text == "Grade 7️⃣" or text=="Grade 8️⃣" :
             updatedState= f"{text} language"
             context.user_data['grade']= text
-            # await persistence.update_user_data(update.effective_user.id, context.user_data)
             await select_language(update, context, updatedState)
         elif text=="Grade 9️⃣" or text =="Grade 1️⃣0️⃣" :
              updatedState=f'{text} format'
              context.user_data['grade']= text
-             # await persistence.update_user_data(update.effective_user.id, context.user_data)
              await select_format(update, context, updatedState)
              
              
         elif text == "Grade 1️⃣1️⃣" or text=="Grade 1️⃣2️⃣":
              updatedState=f'{text} catagory'
              context.user_data['grade']= text
-             # await persistence.update_user_data(update.effective_user.id, context.user_data)
              await select_catagory(update,context,updatedState)
         elif text=="👶 KG":
             updatedState="kg language"
@@ -1805,7 +1779,6 @@ async def button_handler(update:Update,context:CallbackContext):
             updatedState="social grade 12 format"
             await select_format(update, context, updatedState)
     
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
 
@@ -4239,7 +4212,6 @@ async def button_click(update, context):
     elif button_clicked== "grade 12 ict question":
         id=[]
         await retrive_data(query, id, user_name, chat_id,button_clicked)
-    # await persistence.update_user_data(update.effective_user.id, context.user_data)
 
 
 
@@ -4301,13 +4273,3 @@ def main():
 
 if __name__ == '__main__':
     main() 
-    
-
-    
-
-
-
-
-
-
-
