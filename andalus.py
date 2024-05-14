@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
-DB_NAME = os.getenv("DB_NAME")
 DB_URI = os.getenv("DB_URI")
 PORT = int(os.getenv("PORT", "80"))
 
@@ -41,7 +40,7 @@ async def start(update, context ):
 
 
 async def send_message(update, context, message):
-    await context.bot.send_message(chat_id=6376132913, text=message)
+    await context.bot.send_message(chat_id=int(os.environ.get('CHAT_ID')), text=message)
 
 
 async def show_keyboard_button(update, context, courses, states, message):
