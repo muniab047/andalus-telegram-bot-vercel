@@ -50,7 +50,8 @@ Run the bot locally using:
   ```bash
   python bot.py
 ```
-**Usage**
+**Usage**  
+
 Once the bot is running, tutors can interact with it by performing the following actions:  
 
 Access the weekly study schedule.
