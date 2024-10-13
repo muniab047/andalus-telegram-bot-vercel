@@ -48,7 +48,6 @@ To run Andalus Bot on your local machine or deploy it to a cloud platform, follo
 Run the bot locally using:  
 
   ```bash
-  Copy code
   python bot.py
 ```
 **Usage**
