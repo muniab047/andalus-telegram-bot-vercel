@@ -14,7 +14,7 @@ DB_URI = os.getenv("DB_URI")
 PORT = int(os.getenv("PORT", "80"))
 
 logging.basicConfig(level=logging.INFO)
-STUDENTS=['Abas', 'Abdulkadir','Amar','Asiya','Ferhan', 'Hanan','Haniya', 'Hilal', 'Rahmet 06', 'Rahmet (Rim)','Muaz','Mubarek', 'Musab', 'Rahmet 05','Sehmi','Seid','Sekina','Sifen', 'Yezid' ]
+STUDENTS=['Abas', 'Abdulkadir','Abdulmalik','Amar','Asiya','Ferhan', 'Hanan','Haniya', 'Hilal', 'Rahmet 06', 'Rahmet (Rim)','Muaz','Mubarek', 'Musab', 'Rahmet 05','Sehmi','Seid','Sekina','Sifen', 'Yezid' ]
 
 TOKEN = os.getenv("TOKEN")
 bot = Bot(token=TOKEN)
@@ -254,6 +254,8 @@ async def button_handler(update:Update,context:CallbackContext):
             await update.message.reply_text("Click the Link below \n\n https://docs.google.com/document/d/16X1Nugg362hZXLDPHgfiYJc8GivTUuTGfG0icerU7s4/edit?usp=sharing")
         elif text=="Abdulkadir":
             await update.message.reply_text("Click the Link below \n\n https://docs.google.com/document/d/14xuils39cYc8L14EWZAkLlmj7EaBaI18zu-rtDge_ps/edit?usp=sharing")
+        elif text=="Abdulmalik":
+            await update.message.reply_text("Click the Link below \n\n https://docs.google.com/document/d/10FL4MNVGHAg8GqxojSUtWPWuqmn-JhH196cvQjZseRE/edit?usp=sharing")
         elif text=="Amar":
             await update.message.reply_text("Click the Link below \n\n https://docs.google.com/document/d/1KO629Ao_NdVyw1WHe0azw-v7jeCjg2vcl6eaFkf9KZs/edit?usp=sharing")
         elif text=="Asiya":
@@ -301,6 +303,8 @@ async def button_handler(update:Update,context:CallbackContext):
             await update.message.reply_text("Click the Link below \n\n https://docs.google.com/spreadsheets/d/1Wr7WNV4oP0OpZiFfo-XXPTBZ1gi_TEBvHNei3YKx558/edit?usp=sharing")
         elif text=="Abdulkadir":
             await update.message.reply_text("Click the Link below \n\n https://docs.google.com/spreadsheets/d/1lBTneuuUtgVy2CsMNLeeCZ8a9pkTp_B8Pv-s4yMlulk/edit?usp=sharing")
+        elif text=="Abdulmalik":
+            await update.message.reply_text("Click the Link below \n\n https://docs.google.com/spreadsheets/d/18kH_Rh0ExqS0Zke7Han3ksUg0C8A2lpjqIVvg0nbZCs/edit?usp=sharing")
         elif text=="Amar":
             await update.message.reply_text("Click the Link below \n\n https://docs.google.com/spreadsheets/d/1-n1nuI7rQPHDb0NQ1fYA70oNe-k7W2xgfOTc7EhBbZ4/edit?usp=sharing")
         elif text=="Asiya":
@@ -1366,7 +1370,7 @@ async def button_handler(update:Update,context:CallbackContext):
             await show_inlinekeyboard(update,course,photo)
         elif text== "🔬 አከባቢ ሳይንስ":
             photo='https://t.me/amljheyuiodcji/26'
-            course='amharic grade 1 science'
+            course='amharic grade 6 science'
             await show_inlinekeyboard(update,course,photo)
         elif text== "🎨 የስነ ጥበባት ትምህርት":
             photo='https://t.me/amljheyuiodcji/38'
@@ -1980,7 +1984,7 @@ async def button_click(update, context):
         id=[]
         await retrive_data(query, id, user_name, chat_id,button_clicked)
     elif button_clicked== 'amharic grade 3 math text book':
-        id=[86]
+        id=[479]
         await retrive_data(query, id, user_name, chat_id,button_clicked)
     elif button_clicked== "amharic grade 3 math reference":
         id=[]
