@@ -112,7 +112,7 @@ class TelegramHandlers:
         text = update.message.text
         transition = self.bot_state_machine.get_transition(state, text)
 
-        if state == self.bot_state.START and (text == "Student 👨‍🎓" or text == "Availability 🕰️" or text == "Report 📝") :
+        if state == self.bot_state.START and (text == "Weekly Schedule 🗓️" or text == "Student 👨‍🎓" or text == "Availability 🕰️" or text == "Report 📝") :
             member = await self.check_membership(update, context)
 
             if not member:
