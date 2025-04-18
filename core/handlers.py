@@ -8,17 +8,16 @@ from core.states.transition import BotStateMachine
 
 
 class TelegramHandlers:
-    def __init__(self):
-        self.bot_state = BotState()
-        self.bot_state_machine = BotStateMachine()
-        self.query_handler = QueryHandler()
-        self.config = Config()
-        
+    # def __init__(self, bot_state : BotState, bot_state_machine : BotStateMachine, query_handler : QueryHandler, config : Config):
+    #     self.bot_state = bot_state
+    #     self.bot_state_machine = bot_state_machine
+    #     self.query = query_handler
+    #     self.config = config
     
-    # async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-    #     await update.message.reply_text("welcome to andalus")
+    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await update.message.reply_text("welcome to andalus")
   
-    #     await self.show_main_menu(update, context)
+        await self.show_main_menu(update, context)
     
     # async def show_main_menu(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
     #     buttons = [
