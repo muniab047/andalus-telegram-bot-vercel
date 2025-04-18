@@ -30,7 +30,7 @@ query_handler = QueryHandler()
 
 
 
-handler = TelegramHandlers(bot_state=bot_state, bot_state_machine=bot_state_machine, query_handler=query_handler, config=config)
+handler = TelegramHandlers()
 # SQLAlchemy session maker
 def start_session():
     engine = create_engine(DB_URI, client_encoding="utf8")
