@@ -10,25 +10,16 @@ from telegram.ext import (
 )
 from typing import Dict, Any
 
-from andalus import DB_URI, TOKEN, button_click, button_handler, start
-from core.handlers import TelegramHandlers
-from core.config import Config
+from andalus import (start, button_handler,
+                     button_click,
+                     TOKEN, DB_URI)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from infrastructure.postgres import PostgresPersistence
-from core.query import QueryHandler
-from core.states.states import BotState
-from core.states.transition import BotStateMachine
+from postgres import PostgresPersistence
 
 app = FastAPI()
-# config = Config()
-# bot_state = BotState()
-# bot_state_machine = BotStateMachine()
-# query_handler = QueryHandler()
 
-
-# handler = TelegramHandlers(bot_state, bot_state_machine, query_handler, config)
 # SQLAlchemy session maker
 def start_session():
     engine = create_engine(DB_URI, client_encoding="utf8")
@@ -38,6 +29,7 @@ persistence = PostgresPersistence(session=start_session())
 
 
 application = Application.builder().token(TOKEN).persistence(persistence).build()
+
 
 class TelegramWebhook(BaseModel):
     update_id: int
@@ -61,12 +53,9 @@ class TelegramWebhook(BaseModel):
 
 
 def register_application(application):
-    # application.add_handler(CommandHandler("start", handler.start))
-    # application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handler.message_handler))
-    # application.add_handler(CallbackQueryHandler(handler.query_handler))
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
-    app.add_handler(CallbackQueryHandler(button_click))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_handler))
+    application.add_handler(CallbackQueryHandler(button_click))
 
 
 @app.post("/webhook")
