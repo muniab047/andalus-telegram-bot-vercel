@@ -7,7 +7,7 @@ from core.states.states import BotState
 from core.states.transition import BotStateMachine
 
 
-class CustomTelegramHandlers:
+class TelegramHandlers:
     # def __init__(self, bot_state : BotState, bot_state_machine : BotStateMachine, query_handler : QueryHandler, config : Config):
     #     self.bot_state = bot_state
     #     self.bot_state_machine = bot_state_machine
