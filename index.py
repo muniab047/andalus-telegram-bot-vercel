@@ -10,7 +10,6 @@ from telegram.ext import (
 )
 from typing import Dict, Any
 
-from andalus import DB_URI, TOKEN, button_click, button_handler, start
 from core.handlers import  TelegramHandlers
 from core.config import Config
 from sqlalchemy import create_engine
@@ -33,13 +32,13 @@ query_handler = QueryHandler()
 telegram_handler = TelegramHandlers(bot_state, bot_state_machine, query_handler, config)
 # SQLAlchemy session maker
 def start_session():
-    engine = create_engine(DB_URI, client_encoding="utf8")
+    engine = create_engine(config.DB_URI, client_encoding="utf8")
     return scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 persistence = PostgresPersistence(session=start_session())
 
 
-application = Application.builder().token(TOKEN).persistence(persistence).build()
+application = Application.builder().token(config.TOKEN).persistence(persistence).build()
 
 class TelegramWebhook(BaseModel):
     update_id: int
