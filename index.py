@@ -11,7 +11,7 @@ from telegram.ext import (
 from typing import Dict, Any
 
 from andalus import DB_URI, TOKEN, button_click, button_handler, start
-from core.handlers import TelegramHandlers
+from core.handlers import CustomTelegramHandlers
 from core.config import Config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -30,7 +30,7 @@ query_handler = QueryHandler()
 
 
 
-handler = TelegramHandlers()
+message_handler = CustomTelegramHandlers()
 # SQLAlchemy session maker
 def start_session():
     engine = create_engine(DB_URI, client_encoding="utf8")
