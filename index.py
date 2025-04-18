@@ -27,6 +27,11 @@ bot_state = BotState()
 bot_state_machine = BotStateMachine()
 query_handler = QueryHandler()
 
+print("BotState:", type(bot_state))
+print("BotStateMachine:", type(bot_state_machine))
+print("QueryHandler:", type(query_handler))
+print("Config:", type(config))
+
 
 handler = TelegramHandlers(bot_state, bot_state_machine, query_handler, config)
 # SQLAlchemy session maker
